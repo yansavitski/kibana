@@ -25,6 +25,7 @@ import {
 } from '../../../../common/constants';
 import { SEARCH_APPLICATIONS_PATH, SearchApplicationViewTabs } from '../../applications/routes';
 import {
+  AI_PLAYGROUND_PATH,
   CONNECTORS_PATH,
   CRAWLERS_PATH,
   SEARCH_INDICES_PATH,
@@ -105,6 +106,17 @@ export const useEnterpriseSearchNav = () => {
               },
             ]
           : []),
+        {
+          id: 'ai-playground',
+          name: i18n.translate('xpack.enterpriseSearch.nav.aiPlaygroundTitle', {
+            defaultMessage: 'AI Playground',
+          }),
+          ...generateNavLink({
+            shouldNotCreateHref: true,
+            shouldShowActiveForSubroutes: true,
+            to: ENTERPRISE_SEARCH_CONTENT_PLUGIN.URL + AI_PLAYGROUND_PATH,
+          }),
+        },
       ],
       name: i18n.translate('xpack.enterpriseSearch.nav.contentTitle', {
         defaultMessage: 'Content',
