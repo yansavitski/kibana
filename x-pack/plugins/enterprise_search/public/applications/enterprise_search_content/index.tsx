@@ -24,6 +24,7 @@ import { Connectors } from './components/connectors/connectors';
 import { NotFound } from './components/not_found';
 import { SearchIndicesRouter } from './components/search_indices';
 import { Settings } from './components/settings';
+import { AIPlayground } from './components/ai_playground';
 import {
   CONNECTORS_PATH,
   CRAWLERS_PATH,
@@ -32,6 +33,7 @@ import {
   SEARCH_INDICES_PATH,
   SETTINGS_PATH,
   SETUP_GUIDE_PATH,
+  AI_PLAYGROUND_PATH,
 } from './routes';
 
 export const EnterpriseSearchContent: React.FC<InitialAppData> = (props) => {
@@ -85,6 +87,9 @@ export const EnterpriseSearchContentConfigured: React.FC<Required<InitialAppData
       </Route>
       <Route path={SETTINGS_PATH}>
         <Settings />
+      </Route>
+      <Route path={AI_PLAYGROUND_PATH}>
+        <AIPlayground />
       </Route>
       <Route>
         <NotFound />
