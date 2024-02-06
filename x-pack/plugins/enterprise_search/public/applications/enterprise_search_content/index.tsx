@@ -20,11 +20,11 @@ import { HttpLogic } from '../shared/http';
 import { KibanaLogic } from '../shared/kibana';
 import { VersionMismatchPage } from '../shared/version_mismatch';
 
+import { AIPlayground } from './components/ai_playground';
 import { Connectors } from './components/connectors/connectors';
 import { NotFound } from './components/not_found';
 import { SearchIndicesRouter } from './components/search_indices';
 import { Settings } from './components/settings';
-import { AIPlayground } from './components/ai_playground';
 import {
   CONNECTORS_PATH,
   CRAWLERS_PATH,
