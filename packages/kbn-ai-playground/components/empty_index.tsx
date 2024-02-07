@@ -11,10 +11,11 @@ import { EuiButton, EuiEmptyPrompt, EuiFlexGroup, EuiFlexItem, EuiPanel } from '
 
 import { i18n } from '@kbn/i18n';
 
-import { KibanaLogic } from '../../../../shared/kibana';
-import { NEW_INDEX_PATH } from '../../../routes';
+interface EmptyIndexProps {
+  onCreateIndexClick: () => void;
+}
 
-export const EmptyIndex: React.FC = () => {
+export const EmptyIndex: React.FC<EmptyIndexProps> = ({ onCreateIndexClick }) => {
   return (
     <EuiFlexGroup gutterSize="l">
       <EuiFlexItem>
@@ -22,24 +23,19 @@ export const EmptyIndex: React.FC = () => {
           <EuiEmptyPrompt
             title={
               <h2>
-                {i18n.translate(
-                  'xpack.enterpriseSearch.content.aiPlayground.emptyIndex.h2.addData',
-                  {
-                    defaultMessage: 'Add data',
-                  }
-                )}
+                {i18n.translate('aiPlayground.emptyIndex.h2.addData', {
+                  defaultMessage: 'Add data',
+                })}
               </h2>
             }
             iconType="plusInCircle"
             titleSize="m"
+            color="subdued"
             body={
               <p>
-                {i18n.translate(
-                  'xpack.enterpriseSearch.content.aiPlayground.emptyIndex.p.addDataAndIndexLabel',
-                  {
-                    defaultMessage: 'To use the AI Playground, create an index and add some data.',
-                  }
-                )}
+                {i18n.translate('aiPlayground.emptyIndex.p.addDataAndIndexLabel', {
+                  defaultMessage: 'To use the AI Playground, create an index and add some data.',
+                })}
               </p>
             }
             actions={
@@ -48,14 +44,11 @@ export const EmptyIndex: React.FC = () => {
                 disabled={false}
                 fill
                 iconType="plusInCircle"
-                onClick={() => KibanaLogic.values.navigateToUrl(NEW_INDEX_PATH)}
+                onClick={onCreateIndexClick}
               >
-                {i18n.translate(
-                  'xpack.enterpriseSearch.content.aiPlayground.emptyIndex.newIndexButtonLabel',
-                  {
-                    defaultMessage: 'Create an index',
-                  }
-                )}
+                {i18n.translate('aiPlayground.emptyIndex.newIndexButtonLabel', {
+                  defaultMessage: 'Create an index',
+                })}
               </EuiButton>
             }
           />
