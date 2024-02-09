@@ -10,23 +10,29 @@ import React from 'react';
 import { css } from '@emotion/react';
 
 import { EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { i18n } from '@kbn/i18n';
 
 interface QuestionInputProps {
-  placeholder: string;
   value: string;
   onChange: (value: string) => void;
+  onEnterPress: () => void;
   button: React.ReactNode;
   isDisabled?: boolean;
 }
 
 export const QuestionInput: React.FC<QuestionInputProps> = ({
-  placeholder,
   value,
   onChange,
+  onEnterPress,
   button,
   isDisabled,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onEnterPress();
+    }
+  };
 
   return (
     <EuiFlexGroup alignItems="center" justifyContent="spaceBetween" css={{ position: 'relative' }}>
@@ -36,9 +42,12 @@ export const QuestionInput: React.FC<QuestionInputProps> = ({
           padding: '20px 76px 20px 20px',
           height: '56px',
         }}
-        placeholder={placeholder}
+        placeholder={i18n.translate('aiPlayground.chat.questionInput.askQuestionPlaceholder', {
+          defaultMessage: 'Ask a question',
+        })}
         value={value}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         disabled={isDisabled}
       />
 
