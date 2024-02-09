@@ -21,12 +21,14 @@ import { KibanaLogic } from '../shared/kibana';
 import { VersionMismatchPage } from '../shared/version_mismatch';
 
 import { AIPlayground } from './components/ai_playground';
+import { ConnectorDetailRouter } from './components/connector_detail/connector_detail_router';
 import { Connectors } from './components/connectors/connectors';
 import { NotFound } from './components/not_found';
 import { SearchIndicesRouter } from './components/search_indices';
 import { Settings } from './components/settings';
 import {
   CONNECTORS_PATH,
+  CONNECTOR_DETAIL_PATH,
   CRAWLERS_PATH,
   ERROR_STATE_PATH,
   ROOT_PATH,
@@ -78,6 +80,9 @@ export const EnterpriseSearchContentConfigured: React.FC<Required<InitialAppData
       <Redirect exact from={ROOT_PATH} to={SEARCH_INDICES_PATH} />
       <Route path={SEARCH_INDICES_PATH}>
         <SearchIndicesRouter />
+      </Route>
+      <Route path={CONNECTOR_DETAIL_PATH}>
+        <ConnectorDetailRouter />
       </Route>
       <Route path={CONNECTORS_PATH}>
         <Connectors isCrawler={false} />
