@@ -14,60 +14,91 @@ import {
   EuiFlexItem,
   EuiForm,
   EuiHorizontalRule,
-  EuiLink,
   useEuiTheme,
 } from '@elastic/eui';
+import { v4 as uuidv4 } from 'uuid';
 
 import { i18n } from '@kbn/i18n';
+import { useChat, UseChatHelpers } from '@elastic/ai-assist/dist/react';
 
-import { ChatForm, ChatFormFields, MessageRole } from '../types';
+import {
+  AIPlaygroundPluginStartDeps,
+  ChatForm,
+  ChatFormFields,
+  Message,
+  MessageRole,
+} from '../types';
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
-import { OpenAIKey } from './open_ai_key';
+import { OpenAIKeyField } from './open_ai_key_field';
+import { InstructionsField } from './instructions_field';
+import { IncludeCitationsField } from './include_citations_field';
 
 import { TelegramIcon } from './telegram_icon';
-import { InstructionsField } from '@kbn/ai-playground/components/instructions_field';
-import { IncludeCitationsField } from '@kbn/ai-playground/components/include_citations_field';
+import { useKibana } from '@kbn/kibana-react-plugin/public';
+
+const transformFromChatMessages = (messages: UseChatHelpers['messages']): Message[] =>
+  messages.map(({ id, content, createdAt, role }) => ({
+    id,
+    content,
+    createdAt,
+    role: role === 'assistant' ? MessageRole.assistant : MessageRole.user,
+  }));
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
+  const { services } = useKibana<AIPlaygroundPluginStartDeps>();
   const {
     control,
     formState: { isValid, isSubmitting },
     resetField,
     handleSubmit,
   } = useForm<ChatForm>();
-  const messages = [
-    {
-      id: 'sfs',
-      role: MessageRole.system,
-      content: (
-        <>
-          Added <EuiLink>5 indices</EuiLink> to chat context.
-        </>
-      ),
+  const {
+    messages,
+    append,
+    stop: stopRequest,
+  } = useChat({
+    api: async (request: RequestInit) => {
+      const response = await services.http.post('/internal/enterprise_search/ai_playground/chat', {
+        ...request,
+        rawResponse: true,
+        asResponse: true,
+      });
+
+      return response.response!;
     },
-    {
-      id: 'asaqwas',
-      role: MessageRole.assistant,
-      createdAt: new Date(),
-      content:
-        'We went ahead and added your indices. You can start chatting now or modify your sources. For a deeper dive into AI Playground, review our documentation.',
-    },
-    {
-      id: 'asdas',
-      role: MessageRole.user,
-      createdAt: new Date(),
-      content: 'What is the average response time?',
-    },
-  ];
-  const onSubmit = (data: ChatForm) => {
+  });
+  const onSubmit = async (data: ChatForm) => {
+    await append(
+      { content: data.question, role: 'human', createdAt: new Date() },
+      {
+        data: {
+          prompt: data[ChatFormFields.prompt],
+          indices: 'workplace_index',
+          api_key: data[ChatFormFields.openAIKey],
+          citations: data[ChatFormFields.citations],
+        },
+      }
+    );
+
     resetField(ChatFormFields.question);
   };
+  const initialMessages = [
+    {
+      id: uuidv4(),
+      role: MessageRole.system,
+      content: 'You can start chat now',
+    },
+  ];
 
   return (
-    <EuiForm component="form" css={{ display: 'flex' }} onSubmit={handleSubmit(onSubmit)}>
+    <EuiForm
+      component="form"
+      css={{ display: 'flex', flexGrow: 1 }}
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <EuiFlexGroup gutterSize="none">
         <EuiFlexItem
           grow={2}
@@ -78,7 +109,9 @@ export const Chat = () => {
         >
           <EuiFlexGroup direction="column">
             <EuiFlexItem grow={1}>
-              <MessageList messages={messages} />
+              <MessageList
+                messages={[...initialMessages, ...transformFromChatMessages(messages)]}
+              />
             </EuiFlexItem>
 
             <EuiHorizontalRule margin="none" />
@@ -96,19 +129,31 @@ export const Chat = () => {
                   <QuestionInput
                     value={field.value}
                     onChange={field.onChange}
-                    onEnterPress={handleSubmit(onSubmit)}
+                    isDisabled={isSubmitting}
                     button={
-                      <EuiButtonIcon
-                        aria-label={i18n.translate('aiPlayground.chat.sendButtonAriaLabel', {
-                          defaultMessage: 'Send a question',
-                        })}
-                        display={isValid ? 'base' : 'empty'}
-                        size="s"
-                        type="submit"
-                        isLoading={isSubmitting}
-                        isDisabled={!isValid}
-                        iconType={TelegramIcon}
-                      />
+                      isSubmitting ? (
+                        <EuiButtonIcon
+                          aria-label={i18n.translate('aiPlayground.chat.stopButtonAriaLabel', {
+                            defaultMessage: 'Stop request',
+                          })}
+                          display="base"
+                          size="s"
+                          iconType="stop"
+                          onClick={stopRequest}
+                        />
+                      ) : (
+                        <EuiButtonIcon
+                          aria-label={i18n.translate('aiPlayground.chat.sendButtonAriaLabel', {
+                            defaultMessage: 'Send a question',
+                          })}
+                          display={isValid ? 'base' : 'empty'}
+                          size="s"
+                          type="submit"
+                          isLoading={isSubmitting}
+                          isDisabled={!isValid}
+                          iconType={TelegramIcon}
+                        />
+                      )
                     }
                   />
                 )}
@@ -127,9 +172,7 @@ export const Chat = () => {
             name={ChatFormFields.openAIKey}
             control={control}
             defaultValue=""
-            render={({ field }) => (
-              <OpenAIKey apiKey={field.value} onSave={field.onChange} />
-            )}
+            render={({ field }) => <OpenAIKeyField apiKey={field.value} onSave={field.onChange} />}
           />
 
           <Controller
