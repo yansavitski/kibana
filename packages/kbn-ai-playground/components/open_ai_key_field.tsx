@@ -11,6 +11,7 @@ import { OpenAIKeyCallout } from './open_ai_key_callout';
 
 import { OpenAIKeyFlyOut } from './open_ai_key_flyout';
 import { i18n } from '@kbn/i18n';
+import { OpenAISummarizationModel } from './open_ai_summarization_model';
 
 interface OpenAIKeyFieldProps {
   apiKey: string;
@@ -34,11 +35,7 @@ export const OpenAIKeyField: React.FC<OpenAIKeyFieldProps> = ({ apiKey, onSave }
           <OpenAIKeyFlyOut openAPIKey={apiKey} onSave={onSave} onClose={onCloseOpenAIFlyOut} />
         )}
         {apiKey ? (
-          <EuiButtonEmpty flush="both" size="xs" onClick={handleOpenAIFlyOut}>
-            {i18n.translate('aiPlayground.sidebar.openAIField.editLabel', {
-              defaultMessage: 'Edit OpenAI API key',
-            })}
-          </EuiButtonEmpty>
+          <OpenAISummarizationModel openAIFlyOutOpen={handleOpenAIFlyOut} />
         ) : (
           <OpenAIKeyCallout openAIFlyOutOpen={handleOpenAIFlyOut} />
         )}
