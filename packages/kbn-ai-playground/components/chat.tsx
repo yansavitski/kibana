@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -37,14 +37,7 @@ import { IncludeCitationsField } from './include_citations_field';
 
 import { TelegramIcon } from './telegram_icon';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
-
-const transformFromChatMessages = (messages: UseChatHelpers['messages']): Message[] =>
-  messages.map(({ id, content, createdAt, role }) => ({
-    id,
-    content,
-    createdAt,
-    role: role === 'assistant' ? MessageRole.assistant : MessageRole.user,
-  }));
+import { transformFromChatMessages } from '../utils/transformToMessages';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
@@ -85,13 +78,17 @@ export const Chat = () => {
 
     resetField(ChatFormFields.question);
   };
-  const initialMessages = [
-    {
-      id: uuidv4(),
-      role: MessageRole.system,
-      content: 'You can start chat now',
-    },
-  ];
+  const chatMessages = useMemo(
+    () => [
+      {
+        id: uuidv4(),
+        role: MessageRole.system,
+        content: 'You can start chat now',
+      },
+      ...transformFromChatMessages(messages),
+    ],
+    [messages]
+  );
 
   return (
     <EuiForm
@@ -109,9 +106,7 @@ export const Chat = () => {
         >
           <EuiFlexGroup direction="column">
             <EuiFlexItem grow={1}>
-              <MessageList
-                messages={[...initialMessages, ...transformFromChatMessages(messages)]}
-              />
+              <MessageList messages={chatMessages} />
             </EuiFlexItem>
 
             <EuiHorizontalRule margin="none" />
