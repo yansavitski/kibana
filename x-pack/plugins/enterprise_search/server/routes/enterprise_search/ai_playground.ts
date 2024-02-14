@@ -1,12 +1,22 @@
-import { RouteDependencies } from '../../plugin';
-import { elasticsearchErrorHandler } from '../../utils/elasticsearch_error_handler';
-import Assist, { ConversationalChain } from '@elastic/ai-assist';
-import { ChatOpenAI } from '@elastic/ai-assist/models';
-import { Prompt } from '@elastic/ai-assist';
-import { schema } from '@kbn/config-schema';
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0; you may not use this file except in compliance with the Elastic License
+ * 2.0.
+ */
+
 import Stream from 'stream';
 
-export function registerAIPlaygroundRoutes({ log, router }: RouteDependencies) {
+import Assist, { ConversationalChain, Prompt } from '@elastic/ai-assist';
+import { ChatOpenAI } from '@elastic/ai-assist/models';
+import { schema } from '@kbn/config-schema';
+
+import { RouteDependencies } from '../../plugin';
+import { elasticsearchErrorHandler } from '../../utils/elasticsearch_error_handler';
+
+export function registerAIPlaygroundRoutes({ log, router, config }: RouteDependencies) {
+  if (!config.showAIPlayground) return;
+
   router.post(
     {
       path: '/internal/enterprise_search/ai_playground/chat',
