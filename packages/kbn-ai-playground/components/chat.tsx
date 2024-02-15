@@ -39,6 +39,7 @@ import { IncludeCitationsField } from './include_citations_field';
 import { TelegramIcon } from './telegram_icon';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { transformFromChatMessages } from '../utils/transformToMessages';
+import { SourcesPanel } from '@kbn/ai-playground/components/sources_panel/sources_panel';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
@@ -200,6 +201,8 @@ export const Chat = () => {
               <IncludeCitationsField checked={field.value} onChange={field.onChange} />
             )}
           />
+
+          <SourcesPanel />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiForm>
