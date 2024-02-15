@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import { EuiButtonEmpty, EuiComboBox, EuiComboBoxOptionOption, EuiFlexGroup, EuiFlexItem, EuiFormRow, EuiIcon, EuiLink, EuiSelectable, EuiSelectableOption, EuiText, EuiTitle, EuiToolTip } from "@elastic/eui";
+import { EuiButtonEmpty, EuiComboBox, EuiComboBoxOptionOption, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiTitle, EuiToolTip } from "@elastic/eui";
 
 import { i18n } from "@kbn/i18n";
 
@@ -27,6 +27,16 @@ const Summarization_Model: EuiComboBoxOptionOption[] = [
   },
 ];
 
+function formatOptionToComboBox(option: string) {
+  if (!option) return [];
+
+  const selectedOption: EuiComboBoxOptionOption = {
+    key: option,
+    label: option,
+  };
+  return [selectedOption];
+}
+
 interface OpenAISummarizationModelProps {
   openAIFlyOutOpen: (flyOut: boolean) => void;
 }
@@ -35,14 +45,13 @@ export const OpenAISummarizationModel: React.FC<OpenAISummarizationModelProps> =
 
   const [selectedOptions, setSelected] = useState<string>('gpt-3.5-turbo-1106');
 
-  const onChange = (selectedOptions: EuiComboBoxOptionOption) => {
-    // We should only get back either 0 or 1 options.
-    setSelected(selectedOptions.label);
+  const onChange = (selectedOptions: EuiComboBoxOptionOption[]) => {
+    setSelected(selectedOptions[0].label);
   };
 
   return (
     <EuiFlexGroup direction="column">
-      <EuiFlexGroup justifyContent="spaceBetween">
+      <EuiFlexGroup justifyContent="spaceBetween" alignItems="baseline">
         <EuiFlexItem grow={false}>
           <EuiTitle size="xxxs">
             <h5>
@@ -75,7 +84,7 @@ export const OpenAISummarizationModel: React.FC<OpenAISummarizationModelProps> =
           })}
           singleSelection={{ asPlainText: true }}
           options={Summarization_Model}
-          selectedOptions={selectedOptions}
+          selectedOptions={formatOptionToComboBox(selectedOptions)}
           onChange={onChange}
         />
       </EuiFlexGroup>
