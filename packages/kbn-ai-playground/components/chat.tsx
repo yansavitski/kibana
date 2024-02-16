@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -14,6 +14,7 @@ import {
   EuiFlexItem,
   EuiForm,
   EuiHorizontalRule,
+  EuiSpacer,
   useEuiTheme,
 } from '@elastic/eui';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,14 +40,8 @@ import { TelegramIcon } from './telegram_icon';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-
-const transformFromChatMessages = (messages: UseChatHelpers['messages']): Message[] =>
-  messages.map(({ id, content, createdAt, role }) => ({
-    id,
-    content,
-    createdAt,
-    role: role === 'assistant' ? MessageRole.assistant : MessageRole.user,
-  }));
+import { transformFromChatMessages } from '../utils/transformToMessages';
+import { SourcesPanel } from '@kbn/ai-playground/components/sources_panel/sources_panel';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
@@ -98,13 +93,17 @@ export const Chat = () => {
 
     resetField(ChatFormFields.question);
   };
-  const initialMessages = [
-    {
-      id: uuidv4(),
-      role: MessageRole.system,
-      content: 'You can start chat now',
-    },
-  ];
+  const chatMessages = useMemo(
+    () => [
+      {
+        id: uuidv4(),
+        role: MessageRole.system,
+        content: 'You can start chat now',
+      },
+      ...transformFromChatMessages(messages),
+    ],
+    [messages]
+  );
 
   return (
     <EuiForm
@@ -117,19 +116,29 @@ export const Chat = () => {
           grow={2}
           css={{
             borderRight: euiTheme.border.thin,
-            padding: euiTheme.size.l,
+            paddingTop: euiTheme.size.l,
+            paddingBottom: euiTheme.size.l,
           }}
         >
-          <EuiFlexGroup direction="column">
-            <EuiFlexItem grow={1}>
-              <MessageList
-                messages={[...initialMessages, ...transformFromChatMessages(messages)]}
-              />
+          <EuiFlexGroup direction="column" className="eui-fullHeight">
+            {/*// Set scroll at the border of parent element*/}
+            <EuiFlexItem
+              grow={1}
+              className="eui-yScroll"
+              css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
+              tabIndex={0}
+            >
+              <MessageList messages={chatMessages} />
             </EuiFlexItem>
 
-            <EuiHorizontalRule margin="none" />
+            <EuiFlexItem
+              grow={false}
+              css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
+            >
+              <EuiHorizontalRule margin="none" />
 
-            <EuiFlexItem grow={false}>
+              <EuiSpacer size="m" />
+
               <Controller
                 name={ChatFormFields.question}
                 control={control}
@@ -205,6 +214,8 @@ export const Chat = () => {
               <IncludeCitationsField checked={field.value} onChange={field.onChange} />
             )}
           />
+
+          <SourcesPanel />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiForm>
