@@ -3,27 +3,33 @@ import React, {useState} from "react";
 import { EuiButtonEmpty, EuiComboBox, EuiComboBoxOptionOption, EuiFlexGroup, EuiFlexItem, EuiIcon, EuiTitle, EuiToolTip } from "@elastic/eui";
 
 import { i18n } from "@kbn/i18n";
+import { OpenAIIcon } from "./open_ai_icon";
 
 const Summarization_Model: EuiComboBoxOptionOption[] = [
   {
     key: 'gpt-3.5-turbo',
     label: 'gpt-3.5-turbo',
+    prepend: <EuiIcon type={OpenAIIcon} size="s" />
   },
   {
     key: 'gpt-3.5-turbo-1106',
     label: 'gpt-3.5-turbo-1106',
+    prepend: <EuiIcon type={OpenAIIcon} size="s" />
   },
   {
     key: 'gpt-3.5-turbo-16k',
     label: 'gpt-3.5-turbo-16k',
+    prepend: <EuiIcon type={OpenAIIcon} size="s" />
   },
   {
     key: 'gpt-3.5-turbo-16k-0613',
     label: 'gpt-3.5-turbo-16k-0613',
+    prepend: <EuiIcon type={OpenAIIcon} size="s" />
   },
   {
     key: 'gpt-3.5-turbo-instruct',
     label: 'gpt-3.5-turbo-instruct',
+    prepend: <EuiIcon type={OpenAIIcon} size="s" />
   },
 ];
 
@@ -38,7 +44,7 @@ function formatOptionToComboBox(option: string) {
 }
 
 interface OpenAISummarizationModelProps {
-  openAIFlyOutOpen: (flyOut: boolean) => void;
+  openAIFlyOutOpen: () => void;
 }
 
 export const OpenAISummarizationModel: React.FC<OpenAISummarizationModelProps> = ({openAIFlyOutOpen}) => {
@@ -70,7 +76,7 @@ export const OpenAISummarizationModel: React.FC<OpenAISummarizationModelProps> =
           </EuiTitle>   
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
-          <EuiButtonEmpty flush="both" size="xs" onClick={() => openAIFlyOutOpen}>
+          <EuiButtonEmpty flush="both" size="xs" onClick={() => openAIFlyOutOpen()}>
             {i18n.translate('aiPlayground.sidebar.summarizationModel.editLabel', {
               defaultMessage: 'Edit OpenAI API key',
             })}
