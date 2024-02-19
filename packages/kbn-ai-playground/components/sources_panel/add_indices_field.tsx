@@ -5,38 +5,46 @@
  * 2.0.
  */
 
-import { EuiComboBox } from '@elastic/eui';
+import { EuiFormRow, EuiSuperSelect } from '@elastic/eui';
 import React from 'react';
-import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types';
 import { i18n } from '@kbn/i18n';
 
-const options = [
-  { label: 'search-index1', key: 'id-1' },
-  { label: 'search-index1', key: 'id-1' },
-];
+interface AddIndicesFieldProps {
+  indices: string[];
+  selectedIndices: string[];
+  addIndex: (index: string) => void;
+}
 
-export const AddIndicesField = ({ addIndices }) => {
-  const [selectedIndices, setSelectedIndices] = React.useState<string[]>([]);
-  const handleAddIndices = () => {
-    addIndices(selectedIndices);
-  };
-  const onChange = (selectedOptions: EuiComboBoxOptionOption[]) => {
-    setSelectedIndices(
-      selectedOptions.filter((option) => option && !!option.key).map((option) => option.key)
-    );
+export const AddIndicesField: React.FC<AddIndicesFieldProps> = ({
+  selectedIndices,
+  indices,
+  addIndex,
+}) => {
+  const onChange = (selectedIndex: string) => {
+    addIndex(selectedIndex);
   };
 
   return (
-    <EuiComboBox
-      placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
-        defaultMessage: 'Add new data source',
-      })}
+    <EuiFormRow
       fullWidth
-      options={options}
-      selectedOptions={selectedIndices.map(
-        (index) => options.find((option) => option.key === index)!
-      )}
-      onChange={onChange}
-    />
+      label={i18n.translate('aiPlayground.sources.addIndex.label', {
+        defaultMessage: 'Add index',
+      })}
+      labelType="legend"
+    >
+      <EuiSuperSelect
+        placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
+          defaultMessage: 'Add new data source',
+        })}
+        fullWidth
+        options={indices.map((index) => ({
+          value: index,
+          inputDisplay: index,
+          disabled: selectedIndices.includes(index),
+        }))}
+        onChange={onChange}
+        hasDividers
+      />
+    </EuiFormRow>
   );
 };
