@@ -14,7 +14,7 @@ import {
   EuiTitle,
   useGeneratedHtmlId,
 } from '@elastic/eui';
-import { IndicesTable } from './indices_table';
+import { IndicesList } from './indices_list';
 import { AddIndicesField } from './add_indices_field';
 
 interface SourcesFlyoutProps {}
@@ -40,7 +40,14 @@ export const SourcesPanel: React.FC<SourcesFlyoutProps> = () => {
     >
       <EuiFlexGroup direction="column">
         <EuiFlexItem>
-          <IndicesTable onRemoveClick={removeIndex} />
+          <IndicesList
+            indices={[
+              { id: '1', name: 'search-index' },
+              { id: '2', name: 'search-books' },
+            ]}
+            onRemoveClick={removeIndex}
+            hasBorder
+          />
         </EuiFlexItem>
 
         <EuiFlexItem>

@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { EuiButtonIcon, EuiComboBox, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiComboBox } from '@elastic/eui';
 import React from 'react';
 import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types';
 import { i18n } from '@kbn/i18n';
@@ -27,23 +27,16 @@ export const AddIndicesField = ({ addIndices }) => {
   };
 
   return (
-    <EuiFlexGroup alignItems="center" gutterSize="m">
-      <EuiFlexItem>
-        <EuiComboBox
-          placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
-            defaultMessage: 'Add new data source',
-          })}
-          fullWidth
-          options={options}
-          selectedOptions={selectedIndices.map(
-            (index) => options.find((option) => option.key === index)!
-          )}
-          onChange={onChange}
-        />
-      </EuiFlexItem>
-      <EuiFlexItem grow={false}>
-        <EuiButtonIcon display="base" iconType="plusInCircle" size="m" onClick={handleAddIndices} />
-      </EuiFlexItem>
-    </EuiFlexGroup>
+    <EuiComboBox
+      placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
+        defaultMessage: 'Add new data source',
+      })}
+      fullWidth
+      options={options}
+      selectedOptions={selectedIndices.map(
+        (index) => options.find((option) => option.key === index)!
+      )}
+      onChange={onChange}
+    />
   );
 };
