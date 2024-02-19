@@ -20,26 +20,20 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import { i18n } from '@kbn/i18n';
-import { useChat, UseChatHelpers } from '@elastic/ai-assist/dist/react';
+import { useChat } from '@elastic/ai-assist/dist/react';
 
-import {
-  AIPlaygroundPluginStartDeps,
-  ChatForm,
-  ChatFormFields,
-  Message,
-  MessageRole,
-} from '../types';
+import { AIPlaygroundPluginStartDeps, ChatForm, ChatFormFields, MessageRole } from '../types';
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
 import { OpenAIKeyField } from './open_ai_key_field';
 import { InstructionsField } from './instructions_field';
 import { IncludeCitationsField } from './include_citations_field';
+import { SourcesPanelSidebar } from './sources_panel/sources_panel_sidebar';
 
 import { TelegramIcon } from './telegram_icon';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { transformFromChatMessages } from '../utils/transformToMessages';
-import { SourcesPanel } from '@kbn/ai-playground/components/sources_panel/sources_panel';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
@@ -202,7 +196,7 @@ export const Chat = () => {
             )}
           />
 
-          <SourcesPanel />
+          <SourcesPanelSidebar />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiForm>
