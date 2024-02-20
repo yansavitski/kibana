@@ -19,17 +19,18 @@ import { IndicesList } from './indices_list';
 import { AddIndicesField } from './add_indices_field';
 import { IndexName } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 
-interface SourcesPanelSidebarProps {}
+interface SourcesPanelSidebarProps {
+  selectedIndices: IndexName[];
+  addIndex: (newIndex: IndexName) => void;
+  removeIndex: (index: IndexName) => void;
+}
 
-export const SourcesPanelSidebar: React.FC<SourcesPanelSidebarProps> = () => {
+export const SourcesPanelSidebar: React.FC<SourcesPanelSidebarProps> = ({
+  selectedIndices,
+  addIndex,
+  removeIndex,
+}) => {
   const accordionId = useGeneratedHtmlId({ prefix: 'sourceAccordion' });
-  const [selectedIndices, setSelectedIndices] = React.useState<IndexName[]>([]);
-  const addIndex = (newIndex: IndexName) => {
-    setSelectedIndices([...selectedIndices, newIndex]);
-  };
-  const removeIndex = (index: IndexName) => {
-    setSelectedIndices(selectedIndices.filter((indexName) => indexName !== index));
-  };
 
   return (
     <EuiAccordion
