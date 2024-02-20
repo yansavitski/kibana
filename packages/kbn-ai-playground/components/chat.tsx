@@ -21,8 +21,8 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import { i18n } from '@kbn/i18n';
-import { useChat } from '../hooks/useChat';
 
+import { useChat } from '../hooks/useChat';
 import { ChatForm, ChatFormFields, MessageRole } from '../types';
 
 import { MessageList } from './message_list/message_list';
@@ -30,11 +30,11 @@ import { QuestionInput } from './question_input';
 import { OpenAIKeyField } from './open_ai_key_field';
 import { InstructionsField } from './instructions_field';
 import { IncludeCitationsField } from './include_citations_field';
+import { SourcesPanelSidebar } from './sources_panel/sources_panel_sidebar';
 
 import { TelegramIcon } from './telegram_icon';
 
 import { transformFromChatMessages } from '../utils/transformToMessages';
-import { SourcesPanel } from './sources_panel/sources_panel';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
@@ -183,7 +183,7 @@ export const Chat = () => {
             )}
           />
 
-          <SourcesPanel />
+          <SourcesPanelSidebar />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiForm>

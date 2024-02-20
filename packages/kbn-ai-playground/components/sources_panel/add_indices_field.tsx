@@ -6,41 +6,46 @@
  * Side Public License, v 1.
  */
 
-import { EuiButtonIcon, EuiComboBox, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiFormRow, EuiSuperSelect } from '@elastic/eui';
 import React, { useState } from 'react';
-import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types';
 import { i18n } from '@kbn/i18n';
 import { useQueryIndices } from '../../hooks/useQueryIndices';
 
-export const AddIndicesField = ({ addIndices, indices }) => {
+interface AddIndicesFieldProps {
+  indices: string[];
+  selectedIndices: string[];
+  onIndexSelect: (index: string) => void;
+}
+
+export const AddIndicesField: React.FC<AddIndicesFieldProps> = ({
+  selectedIndices,
+  indices,
+  onIndexSelect,
+}) => {
   const [query, setQuery] = useState<string>('');
   const { options, isLoading } = useQueryIndices(query);
 
-  const onChange = (selectedOptions: EuiComboBoxOptionOption[]) => {
-    addIndices(selectedOptions.map((option) => option.label));
-  };
-
-  const onSearchChange = (searchValue: string) => {
-    setQuery(searchValue);
-  };
-
   return (
-    <EuiFlexGroup alignItems="center" gutterSize="m">
-      <EuiFlexItem>
-        <EuiComboBox
-          singleSelection={{ asPlainText: true }}
-          placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
-            defaultMessage: 'Add new data source',
-          })}
-          async
-          isLoading={isLoading}
-          onChange={onChange}
-          onSearchChange={onSearchChange}
-          fullWidth
-          options={options.filter((option) => !indices.includes(option.label))}
-          selectedOptions={[]}
-        />
-      </EuiFlexItem>
-    </EuiFlexGroup>
+    <EuiFormRow
+      fullWidth
+      label={i18n.translate('aiPlayground.sources.addIndex.label', {
+        defaultMessage: 'Add index',
+      })}
+      labelType="legend"
+    >
+      <EuiSuperSelect
+        placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
+          defaultMessage: 'Select new data source',
+        })}
+        fullWidth
+        options={indices.map((index) => ({
+          value: index,
+          inputDisplay: index,
+          disabled: selectedIndices.includes(index),
+        }))}
+        onChange={onIndexSelect}
+        hasDividers
+      />
+    </EuiFormRow>
   );
 };
