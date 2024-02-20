@@ -8,7 +8,7 @@
 
 import React, { useMemo } from 'react';
 
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import {
   EuiButtonIcon,
   EuiFlexGroup,
@@ -27,25 +27,24 @@ import { ChatForm, ChatFormFields, MessageRole } from '../types';
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
-import { OpenAIKeyField } from './open_ai_key_field';
-import { InstructionsField } from './instructions_field';
-import { IncludeCitationsField } from './include_citations_field';
-import { SourcesPanelSidebar } from './sources_panel/sources_panel_sidebar';
 
 import { TelegramIcon } from './telegram_icon';
 
 import { transformFromChatMessages } from '../utils/transformToMessages';
-import { IndexName } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
+import { ChatSidebar } from '@kbn/ai-playground/components/chat_sidebar';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
+  const form = useForm<ChatForm>();
   const {
     control,
+    watch,
     formState: { isValid, isSubmitting },
     resetField,
     handleSubmit,
-  } = useForm<ChatForm>();
+  } = form;
   const { messages, append, stop: stopRequest } = useChat();
+  const selectedIndicesCount = watch(ChatFormFields.indices, []).length;
 
   const onSubmit = async (data: ChatForm) => {
     await append(
@@ -75,133 +74,90 @@ export const Chat = () => {
   );
 
   return (
-    <EuiForm
-      component="form"
-      css={{ display: 'flex', flexGrow: 1 }}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <EuiFlexGroup gutterSize="none">
-        <EuiFlexItem
-          grow={2}
-          css={{
-            borderRight: euiTheme.border.thin,
-            paddingTop: euiTheme.size.l,
-            paddingBottom: euiTheme.size.l,
-          }}
-        >
-          <EuiFlexGroup direction="column" className="eui-fullHeight">
-            {/* // Set scroll at the border of parent element*/}
-            <EuiFlexItem
-              grow={1}
-              className="eui-yScroll"
-              css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
-              tabIndex={0}
-            >
-              <MessageList messages={chatMessages} />
-            </EuiFlexItem>
+    <FormProvider {...form}>
+      <EuiForm
+        component="form"
+        css={{ display: 'flex', flexGrow: 1 }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <EuiFlexGroup gutterSize="none">
+          <EuiFlexItem
+            grow={2}
+            css={{
+              borderRight: euiTheme.border.thin,
+              paddingTop: euiTheme.size.l,
+              paddingBottom: euiTheme.size.l,
+            }}
+          >
+            <EuiFlexGroup direction="column" className="eui-fullHeight">
+              {/* // Set scroll at the border of parent element*/}
+              <EuiFlexItem
+                grow={1}
+                className="eui-yScroll"
+                css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
+                tabIndex={0}
+              >
+                <MessageList messages={chatMessages} />
+              </EuiFlexItem>
 
-            <EuiFlexItem
-              grow={false}
-              css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
-            >
-              <EuiHorizontalRule margin="none" />
+              <EuiFlexItem
+                grow={false}
+                css={{ paddingLeft: euiTheme.size.l, paddingRight: euiTheme.size.l }}
+              >
+                <EuiHorizontalRule margin="none" />
 
-              <EuiSpacer size="m" />
+                <EuiSpacer size="m" />
 
-              <Controller
-                name={ChatFormFields.question}
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: true,
-                  validate: (rule) => !!rule?.trim(),
-                }}
-                render={({ field }) => (
-                  <QuestionInput
-                    value={field.value}
-                    onChange={field.onChange}
-                    isDisabled={isSubmitting}
-                    button={
-                      isSubmitting ? (
-                        <EuiButtonIcon
-                          aria-label={i18n.translate('aiPlayground.chat.stopButtonAriaLabel', {
-                            defaultMessage: 'Stop request',
-                          })}
-                          display="base"
-                          size="s"
-                          iconType="stop"
-                          onClick={stopRequest}
-                        />
-                      ) : (
-                        <EuiButtonIcon
-                          aria-label={i18n.translate('aiPlayground.chat.sendButtonAriaLabel', {
-                            defaultMessage: 'Send a question',
-                          })}
-                          display={isValid ? 'base' : 'empty'}
-                          size="s"
-                          type="submit"
-                          isLoading={isSubmitting}
-                          isDisabled={!isValid}
-                          iconType={TelegramIcon}
-                        />
-                      )
-                    }
-                  />
-                )}
-              />
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiFlexItem>
+                <Controller
+                  name={ChatFormFields.question}
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: true,
+                    validate: (rule) => !!rule?.trim(),
+                  }}
+                  render={({ field }) => (
+                    <QuestionInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      isDisabled={isSubmitting}
+                      button={
+                        isSubmitting ? (
+                          <EuiButtonIcon
+                            aria-label={i18n.translate('aiPlayground.chat.stopButtonAriaLabel', {
+                              defaultMessage: 'Stop request',
+                            })}
+                            display="base"
+                            size="s"
+                            iconType="stop"
+                            onClick={stopRequest}
+                          />
+                        ) : (
+                          <EuiButtonIcon
+                            aria-label={i18n.translate('aiPlayground.chat.sendButtonAriaLabel', {
+                              defaultMessage: 'Send a question',
+                            })}
+                            display={isValid ? 'base' : 'empty'}
+                            size="s"
+                            type="submit"
+                            isLoading={isSubmitting}
+                            isDisabled={!isValid}
+                            iconType={TelegramIcon}
+                          />
+                        )
+                      }
+                    />
+                  )}
+                />
+              </EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFlexItem>
 
-        <EuiFlexItem
-          grow={1}
-          css={{
-            padding: euiTheme.size.l,
-          }}
-        >
-          <Controller
-            name={ChatFormFields.openAIKey}
-            control={control}
-            defaultValue=""
-            render={({ field }) => <OpenAIKeyField apiKey={field.value} onSave={field.onChange} />}
-          />
-
-          <Controller
-            name={ChatFormFields.prompt}
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <InstructionsField value={field.value} onChange={field.onChange} />
-            )}
-          />
-
-          <Controller
-            name={ChatFormFields.citations}
-            control={control}
-            defaultValue={true}
-            render={({ field }) => (
-              <IncludeCitationsField checked={field.value} onChange={field.onChange} />
-            )}
-          />
-
-          <Controller
-            name={ChatFormFields.indices}
-            control={control}
-            defaultValue={[]}
-            render={({ field }) => (
-              <SourcesPanelSidebar
-                selectedIndices={field.value}
-                addIndex={(newIndex: IndexName) => {
-                  field.onChange([...field.value, newIndex]);
-                }}
-                removeIndex={(index: IndexName) => {
-                  field.onChange(field.value.filter((indexName) => indexName !== index));
-                }}
-              />
-            )}
-          />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </EuiForm>
+          <EuiFlexItem grow={1}>
+            <ChatSidebar selectedIndicesCount={selectedIndicesCount} />
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiForm>
+    </FormProvider>
   );
 };
