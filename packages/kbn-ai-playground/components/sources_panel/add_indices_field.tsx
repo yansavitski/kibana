@@ -6,24 +6,32 @@
  * Side Public License, v 1.
  */
 
-import { EuiFormRow, EuiSuperSelect } from '@elastic/eui';
+import { EuiComboBox, EuiFormRow } from '@elastic/eui';
 import React, { useState } from 'react';
 import { i18n } from '@kbn/i18n';
 import { useQueryIndices } from '../../hooks/useQueryIndices';
+import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types';
+import { IndexName } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 
 interface AddIndicesFieldProps {
-  indices: string[];
-  selectedIndices: string[];
-  onIndexSelect: (index: string) => void;
+  selectedIndices: IndexName[];
+  onIndexSelect: (index: IndexName) => void;
 }
 
 export const AddIndicesField: React.FC<AddIndicesFieldProps> = ({
   selectedIndices,
-  indices,
   onIndexSelect,
 }) => {
   const [query, setQuery] = useState<string>('');
-  const { options, isLoading } = useQueryIndices(query);
+  const { indices, isLoading } = useQueryIndices(query);
+  const handleChange = (value: Array<EuiComboBoxOptionOption<IndexName>>) => {
+    if (value?.[0]?.label) {
+      onIndexSelect(value[0].label);
+    }
+  };
+  const handleSearchChange = (searchValue: string) => {
+    setQuery(searchValue);
+  };
 
   return (
     <EuiFormRow
@@ -33,18 +41,21 @@ export const AddIndicesField: React.FC<AddIndicesFieldProps> = ({
       })}
       labelType="legend"
     >
-      <EuiSuperSelect
+      <EuiComboBox
+        singleSelection={{ asPlainText: true }}
         placeholder={i18n.translate('aiPlayground.sources.addIndex.placeholder', {
           defaultMessage: 'Select new data source',
         })}
+        async
+        isLoading={isLoading}
+        onChange={handleChange}
+        onSearchChange={handleSearchChange}
         fullWidth
         options={indices.map((index) => ({
-          value: index,
-          inputDisplay: index,
+          label: index,
           disabled: selectedIndices.includes(index),
         }))}
-        onChange={onIndexSelect}
-        hasDividers
+        isClearable={false}
       />
     </EuiFormRow>
   );

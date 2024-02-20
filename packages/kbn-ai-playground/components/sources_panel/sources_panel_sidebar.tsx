@@ -17,19 +17,20 @@ import {
 } from '@elastic/eui';
 import { IndicesList } from './indices_list';
 import { AddIndicesField } from './add_indices_field';
+import { IndexName } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 
-interface SourcesPanelSidebarProps {}
+interface SourcesPanelSidebarProps {
+  selectedIndices: IndexName[];
+  addIndex: (newIndex: IndexName) => void;
+  removeIndex: (index: IndexName) => void;
+}
 
-export const SourcesPanelSidebar: React.FC<SourcesPanelSidebarProps> = () => {
+export const SourcesPanelSidebar: React.FC<SourcesPanelSidebarProps> = ({
+  selectedIndices,
+  addIndex,
+  removeIndex,
+}) => {
   const accordionId = useGeneratedHtmlId({ prefix: 'sourceAccordion' });
-  const indices = ['search-index', 'search-books'];
-  const [selectedIndices, setSelectedIndices] = React.useState<string[]>([]);
-  const addIndex = (newIndex: string) => {
-    setSelectedIndices([...selectedIndices, newIndex]);
-  };
-  const removeIndex = (index: string) => {
-    setSelectedIndices(selectedIndices.filter((indexName) => indexName !== index));
-  };
 
   return (
     <EuiAccordion
@@ -56,11 +57,7 @@ export const SourcesPanelSidebar: React.FC<SourcesPanelSidebarProps> = () => {
         </EuiFlexItem>
 
         <EuiFlexItem>
-          <AddIndicesField
-            selectedIndices={selectedIndices}
-            indices={indices}
-            onIndexSelect={addIndex}
-          />
+          <AddIndicesField selectedIndices={selectedIndices} onIndexSelect={addIndex} />
         </EuiFlexItem>
       </EuiFlexGroup>
     </EuiAccordion>
