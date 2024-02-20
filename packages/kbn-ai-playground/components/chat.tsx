@@ -54,6 +54,7 @@ export const Chat = () => {
     formState: { isValid, isSubmitting },
     resetField,
     handleSubmit,
+    getValues,
   } = useForm<ChatForm>();
   const {
     messages,
@@ -70,21 +71,40 @@ export const Chat = () => {
       return response.response!;
     },
   });
-  const onSubmit = async (data: ChatForm) => {
-    await append(
-      { content: data.question, role: 'human', createdAt: new Date() },
-      {
-        data: {
-          prompt: data[ChatFormFields.prompt],
-          indices: 'workplace_index',
-          api_key: data[ChatFormFields.openAIKey],
-          citations: data[ChatFormFields.citations],
-        },
-      }
-    );
 
-    resetField(ChatFormFields.question);
+  const onSubmit = async (data: ChatForm) => {
+    console.log('dataaaa::: ', {
+      prompt: data[ChatFormFields.prompt],
+      indices: 'workplace_index',
+      api_key: data[ChatFormFields.openAIFields].openAIKey,
+      summarization_model: data[ChatFormFields.openAIFields].summarizationModel,
+      citations: data[ChatFormFields.citations],
+    });
   };
+  // const onSubmit = async (data: ChatForm) => {
+  //   console.log('dataaaa::: ', {
+  //     prompt: data[ChatFormFields.prompt],
+  //     indices: 'workplace_index',
+  //     api_key: data[ChatFormFields.openAIKey],
+  //     summarization_model: data[ChatFormFields.summarizationModel],
+  //     citations: data[ChatFormFields.citations],
+  //   });
+
+  //   await append(
+  //     { content: data.question, role: 'human', createdAt: new Date() },
+  //     {
+  //       data: {
+  //         prompt: data[ChatFormFields.prompt],
+  //         indices: 'workplace_index',
+  //         api_key: data[ChatFormFields.openAIKey],
+  //         summarization_model: data[ChatFormFields.summarizationModel],
+  //         citations: data[ChatFormFields.citations],
+  //       },
+  //     }
+  //   );
+
+  //   resetField(ChatFormFields.question);
+  // };
   const initialMessages = [
     {
       id: uuidv4(),
@@ -93,6 +113,8 @@ export const Chat = () => {
     },
   ];
 
+  const openAIKey = getValues(ChatFormFields.openAIKey);
+  console.log('openAIKey from chat', openAIKey);
   return (
     <EuiForm
       component="form"
@@ -168,12 +190,13 @@ export const Chat = () => {
             padding: euiTheme.size.l,
           }}
         >
-          <Controller
-            name={ChatFormFields.openAIKey}
-            control={control}
-            defaultValue=""
+          <OpenAIKeyField control={control} openAIKey={openAIKey} />
+           {/* <Controller
+             name={ChatFormFields.openAIKey}
+             control={control}
+             defaultValue=""
             render={({ field }) => <OpenAIKeyField apiKey={field.value} onSave={field.onChange} />}
-          />
+            /> */}
 
           <Controller
             name={ChatFormFields.prompt}

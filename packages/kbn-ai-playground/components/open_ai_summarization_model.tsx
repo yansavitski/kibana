@@ -4,6 +4,8 @@ import { EuiButtonEmpty, EuiComboBox, EuiComboBoxOptionOption, EuiFlexGroup, Eui
 
 import { i18n } from "@kbn/i18n";
 import { OpenAIIcon } from "./open_ai_icon";
+import { useForm } from "react-hook-form";
+import { ChatForm, ChatFormFields } from "../types";
 
 const Summarization_Model: EuiComboBoxOptionOption[] = [
   {
@@ -45,14 +47,20 @@ function formatOptionToComboBox(option: string) {
 
 interface OpenAISummarizationModelProps {
   openAIFlyOutOpen: () => void;
+  model: string;
+  onSelect: (key: string) => void;
 }
 
 export const OpenAISummarizationModel: React.FC<OpenAISummarizationModelProps> = ({openAIFlyOutOpen}) => {
+  const { getValues, setValue } = useForm<ChatForm>();
+  const model = getValues(ChatFormFields.summarizationModel);
 
-  const [selectedOptions, setSelected] = useState<string>('gpt-3.5-turbo-1106');
+  const [selectedOptions, setSelected] = useState<string>(model ?? 'gpt-3.5-turbo-1106');
 
   const onChange = (selectedOptions: EuiComboBoxOptionOption[]) => {
     setSelected(selectedOptions[0].label);
+    setValue(ChatFormFields.openAIKey, "popopopopopoo");
+    setValue(ChatFormFields.summarizationModel, selectedOptions[0].label);
   };
 
   return (

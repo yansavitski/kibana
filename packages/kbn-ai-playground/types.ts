@@ -28,6 +28,7 @@ export enum ChatFormFields {
   citations = 'citations',
   prompt = 'prompt',
   openAIKey = 'api_key',
+  summarizationModel = 'summarization_model',
 }
 
 export interface ChatForm {
@@ -35,6 +36,7 @@ export interface ChatForm {
   [ChatFormFields.prompt]: string;
   [ChatFormFields.citations]: boolean;
   [ChatFormFields.openAIKey]: string;
+  [ChatFormFields.summarizationModel]: string;
 }
 
 export interface AIPlaygroundPluginStartDeps {

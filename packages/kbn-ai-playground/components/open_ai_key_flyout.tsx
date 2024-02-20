@@ -8,18 +8,20 @@
 import { EuiButton, EuiButtonEmpty, EuiFieldText, EuiFlexGroup, EuiFlexItem, EuiFlyout, EuiFlyoutBody, EuiFlyoutFooter, EuiFlyoutHeader, EuiFormRow, EuiLink, EuiSpacer, EuiText, EuiTitle } from "@elastic/eui";
 import { i18n } from "@kbn/i18n";
 import React, { useState } from "react";
+import { ChatFormFields } from "../types";
 
 export interface OpenAIKeyFlyOutProps {
   openAPIKey: string;
   onClose: () => void;
   onSave: (key: string) => void;
+  register: any;
 }
 
-export const OpenAIKeyFlyOut: React.FC<OpenAIKeyFlyOutProps> = ({ openAPIKey, onClose, onSave }) => {
-  const [apiKey, setApiKey] = useState<string>(openAPIKey);
+export const OpenAIKeyFlyOut: React.FC<OpenAIKeyFlyOutProps> = ({ register, openAPIKey, onClose, onSave }) => {
+  const [apiKey, setApiKey] = useState<string>(openAPIKey ?? '');
 
   const handleSave = () => {
-    onSave(apiKey);
+    onSave(apiKey.trim());
     onClose();
   }
 
@@ -53,6 +55,8 @@ export const OpenAIKeyFlyOut: React.FC<OpenAIKeyFlyOutProps> = ({ openAPIKey, on
             }>
             <EuiFlexItem grow>
               <EuiFieldText
+                id={ChatFormFields.openAIKey}
+                {...register(ChatFormFields.openAIKey)}
                 fullWidth
                 placeholder={i18n.translate(
                   'aiPlayground.sidebar.openAIFlyOut.placeholder',
