@@ -1,8 +1,9 @@
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
- * 2.0; you may not use this file except in compliance with the Elastic License
- * 2.0.
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import React, { useMemo } from 'react';
@@ -20,9 +21,9 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import { i18n } from '@kbn/i18n';
-import { useChat } from '@elastic/ai-assist/dist/react';
 
-import { AIPlaygroundPluginStartDeps, ChatForm, ChatFormFields, MessageRole } from '../types';
+import { useChat } from '../hooks/useChat';
+import { ChatForm, ChatFormFields, MessageRole } from '../types';
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
@@ -32,33 +33,19 @@ import { IncludeCitationsField } from './include_citations_field';
 import { SourcesPanelSidebar } from './sources_panel/sources_panel_sidebar';
 
 import { TelegramIcon } from './telegram_icon';
-import { useKibana } from '@kbn/kibana-react-plugin/public';
+
 import { transformFromChatMessages } from '../utils/transformToMessages';
 
 export const Chat = () => {
   const { euiTheme } = useEuiTheme();
-  const { services } = useKibana<AIPlaygroundPluginStartDeps>();
   const {
     control,
     formState: { isValid, isSubmitting },
     resetField,
     handleSubmit,
   } = useForm<ChatForm>();
-  const {
-    messages,
-    append,
-    stop: stopRequest,
-  } = useChat({
-    api: async (request: RequestInit) => {
-      const response = await services.http.post('/internal/enterprise_search/ai_playground/chat', {
-        ...request,
-        rawResponse: true,
-        asResponse: true,
-      });
+  const { messages, append, stop: stopRequest } = useChat();
 
-      return response.response!;
-    },
-  });
   const onSubmit = async (data: ChatForm) => {
     await append(
       { content: data.question, role: 'human', createdAt: new Date() },
@@ -67,7 +54,7 @@ export const Chat = () => {
           prompt: data[ChatFormFields.prompt],
           indices: 'workplace_index',
           api_key: data[ChatFormFields.openAIKey],
-          citations: data[ChatFormFields.citations],
+          citations: data[ChatFormFields.citations].toString(),
         },
       }
     );
@@ -102,7 +89,7 @@ export const Chat = () => {
           }}
         >
           <EuiFlexGroup direction="column" className="eui-fullHeight">
-            {/*// Set scroll at the border of parent element*/}
+            {/* // Set scroll at the border of parent element*/}
             <EuiFlexItem
               grow={1}
               className="eui-yScroll"
