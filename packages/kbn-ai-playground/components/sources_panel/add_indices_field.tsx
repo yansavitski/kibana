@@ -9,9 +9,9 @@
 import { EuiComboBox, EuiFormRow } from '@elastic/eui';
 import React, { useState } from 'react';
 import { i18n } from '@kbn/i18n';
-import { useQueryIndices } from '../../hooks/useQueryIndices';
 import { EuiComboBoxOptionOption } from '@elastic/eui/src/components/combo_box/types';
 import { IndexName } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
+import { useQueryIndices } from '../../hooks/useQueryIndices';
 
 interface AddIndicesFieldProps {
   selectedIndices: IndexName[];
