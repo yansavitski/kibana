@@ -33,6 +33,7 @@ import {
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
+import { StartNewChat } from './start_new_chat';
 
 import { TelegramIcon } from './telegram_icon';
 
