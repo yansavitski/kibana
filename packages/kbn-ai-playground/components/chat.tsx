@@ -24,7 +24,12 @@ import { i18n } from '@kbn/i18n';
 
 import { ChatSidebar } from './chat_sidebar';
 import { useChat } from '../hooks/useChat';
-import { ChatForm, ChatFormFields, MessageRole } from '../types';
+import {
+  ChatForm,
+  ChatFormFields,
+  MessageRole,
+  SummarizationModelName
+} from '../types';
 
 import { MessageList } from './message_list/message_list';
 import { QuestionInput } from './question_input';
@@ -55,7 +60,7 @@ export const Chat = () => {
           api_key: data[ChatFormFields.openAIKey],
           citations: data[ChatFormFields.citations].toString(),
           elasticsearchQuery: JSON.stringify(data[ChatFormFields.elasticsearchQuery]),
-          summarization_model: data[ChatFormFields.summarizationModel],
+          summarization_model: data[ChatFormFields.summarizationModel] ?? SummarizationModelName.gpt3_5_turbo_1106,
         },
       }
     );
