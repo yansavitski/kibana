@@ -74,6 +74,9 @@ export const EnterpriseSearchContent: React.FC<InitialAppData> = (props) => {
 };
 
 export const EnterpriseSearchContentConfigured: React.FC<Required<InitialAppData>> = () => {
+  const {
+    productFeatures: { showAIPlayground },
+  } = useValues(KibanaLogic);
   return (
     <Routes>
       <Redirect exact from={ROOT_PATH} to={SEARCH_INDICES_PATH} />
@@ -92,9 +95,11 @@ export const EnterpriseSearchContentConfigured: React.FC<Required<InitialAppData
       <Route path={SETTINGS_PATH}>
         <Settings />
       </Route>
-      <Route path={AI_PLAYGROUND_PATH}>
-        <AIPlayground />
-      </Route>
+      {showAIPlayground && (
+        <Route path={AI_PLAYGROUND_PATH}>
+          <AIPlayground />
+        </Route>
+      )}
       <Route>
         <NotFound />
       </Route>
