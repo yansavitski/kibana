@@ -11,7 +11,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { AIPlayground } from './ai_playground';
+import { AIPlayground } from './playground';
 import { Chat } from './components/chat';
 import { EmptyIndex } from './components/empty_index';
 

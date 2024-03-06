@@ -5,9 +5,8 @@
  * 2.0.
  */
 
-import Assist, { ConversationalChain } from '@elastic/ai-assist';
+import Assist, { ConversationalChain, Prompt } from '@elastic/ai-assist';
 
-import { Prompt } from '@elastic/ai-assist';
 import { ChatOpenAI } from '@elastic/ai-assist/models';
 import { fetchFields } from '@kbn/ai-playground/lib/fetch_query_source_fields';
 import { schema } from '@kbn/config-schema';
@@ -16,14 +15,14 @@ import { streamFactory } from '@kbn/ml-response-stream/server';
 import { RouteDependencies } from '../../plugin';
 import { elasticsearchErrorHandler } from '../../utils/elasticsearch_error_handler';
 
-export function registerAIPlaygroundRoutes({ log, router, config }: RouteDependencies) {
+export function registerPlaygroundRoutes({ log, router, config }: RouteDependencies) {
   if (!config.showPlayground) {
     return;
   }
 
   router.post(
     {
-      path: '/internal/enterprise_search/ai_playground/query_source_fields',
+      path: '/internal/enterprise_search/playground/query_source_fields',
       validate: {
         body: schema.object({
           indices: schema.arrayOf(schema.string()),
