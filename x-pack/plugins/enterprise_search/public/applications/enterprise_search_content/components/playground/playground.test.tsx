@@ -11,9 +11,9 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { AIPlayground } from './playground';
 import { Chat } from './components/chat';
 import { EmptyIndex } from './components/empty_index';
+import { Playground } from './playground';
 
 describe('AI Playground', () => {
   describe('Empty state', () => {
@@ -22,7 +22,7 @@ describe('AI Playground', () => {
         hasNoIndices: true,
       });
 
-      const wrapper = shallow(<AIPlayground />);
+      const wrapper = shallow(<Playground />);
 
       expect(wrapper.find(EmptyIndex)).toHaveLength(1);
     });
@@ -33,7 +33,7 @@ describe('AI Playground', () => {
       hasNoIndices: false,
     });
 
-    const wrapper = shallow(<AIPlayground />);
+    const wrapper = shallow(<Playground />);
 
     expect(wrapper.find(EmptyIndex)).toHaveLength(0);
     expect(wrapper.find(Chat)).toHaveLength(1);

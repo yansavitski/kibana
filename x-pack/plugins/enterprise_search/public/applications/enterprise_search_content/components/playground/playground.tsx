@@ -10,8 +10,8 @@ import React, { useCallback } from 'react';
 import { useValues } from 'kea';
 
 import { EuiPageTemplate } from '@elastic/eui';
-import { Chat, AIPlaygroundProvider, ViewQueryAction, ViewCodeAction } from '@kbn/ai-playground';
 import { i18n } from '@kbn/i18n';
+import { Chat, PlaygroundProvider, ViewQueryAction, ViewCodeAction } from '@kbn/playground';
 
 import { KibanaLogic } from '../../../shared/kibana';
 import { NEW_INDEX_PATH } from '../../routes';
@@ -22,7 +22,7 @@ export const Playground: React.FC = () => {
   const handleNavigateToIndex = useCallback(() => navigateToUrl(NEW_INDEX_PATH), [navigateToUrl]);
 
   return (
-    <AIPlaygroundProvider navigateToIndexPage={handleNavigateToIndex}>
+    <PlaygroundProvider navigateToIndexPage={handleNavigateToIndex}>
       <EnterpriseSearchContentPageTemplate
         pageChrome={[
           i18n.translate('xpack.enterpriseSearch.content.playground.breadcrumb', {
@@ -53,6 +53,6 @@ export const Playground: React.FC = () => {
           <Chat />
         </EuiPageTemplate.Section>
       </EnterpriseSearchContentPageTemplate>
-    </AIPlaygroundProvider>
+    </PlaygroundProvider>
   );
 };

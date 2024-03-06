@@ -1,0 +1,5 @@
+{
+  "type": "shared-browser",
+  "id": "@kbn/playground",
+  "owner": "@elastic/enterprise-search-frontend"
+}

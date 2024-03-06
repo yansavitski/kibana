@@ -8,9 +8,9 @@
 import Assist, { ConversationalChain, Prompt } from '@elastic/ai-assist';
 
 import { ChatOpenAI } from '@elastic/ai-assist/models';
-import { fetchFields } from '@kbn/ai-playground/lib/fetch_query_source_fields';
 import { schema } from '@kbn/config-schema';
 import { streamFactory } from '@kbn/ml-response-stream/server';
+import { fetchFields } from '@kbn/playground/lib/fetch_query_source_fields';
 
 import { RouteDependencies } from '../../plugin';
 import { elasticsearchErrorHandler } from '../../utils/elasticsearch_error_handler';
@@ -44,7 +44,7 @@ export function registerPlaygroundRoutes({ log, router, config }: RouteDependenc
 
   router.post(
     {
-      path: '/internal/enterprise_search/ai_playground/chat',
+      path: '/internal/enterprise_search/playground/chat',
       validate: {
         body: schema.object({
           data: schema.any(),
@@ -111,7 +111,7 @@ export function registerPlaygroundRoutes({ log, router, config }: RouteDependenc
 
   router.post(
     {
-      path: '/internal/enterprise_search/ai_playground/api_key',
+      path: '/internal/enterprise_search/playground/api_key',
       validate: {
         body: schema.object({
           name: schema.string(),
@@ -128,7 +128,7 @@ export function registerPlaygroundRoutes({ log, router, config }: RouteDependenc
         name,
         expiration: `${expiresInDays}d`,
         role_descriptors: {
-          [`aiPlaygroud-${name}-role`]: {
+          [`Playgroud-${name}-role`]: {
             cluster: [],
             indices: [
               {
