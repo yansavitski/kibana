@@ -68,6 +68,6 @@
     "@kbn/code-editor",
     "@kbn/console-plugin",
     "@kbn/core-notifications-browser",
-    "@kbn/ai-playground"
+    "@kbn/playground"
   ]
 }
