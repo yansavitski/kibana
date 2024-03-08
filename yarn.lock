@@ -5428,10 +5428,6 @@
   version "0.0.0"
   uid ""
 
-"@kbn/playground@link:packages/kbn-playground":
-  version "0.0.0"
-  uid ""
-
 "@kbn/plugin-check@link:packages/kbn-plugin-check":
   version "0.0.0"
   uid ""
